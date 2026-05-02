@@ -1,6 +1,6 @@
-# WIT - WoT Intelligent Testing
+# WoTT - Web of Thing Testing
 
-WIT is a web application written in TypeScript that enables the automatic generation of test suites from Thing Descriptions compliant with the [W3C Web of Things (WoT)](https://www.w3.org/TR/wot-thing-description-2.0/).
+WoTT is a web application written in TypeScript that enables the automatic generation of test suites from Thing Descriptions compliant with the [W3C Web of Things (WoT)](https://www.w3.org/TR/wot-thing-description-2.0/).
 
 The application provides an integrated editor to upload, write, and validate Thing Descriptions in JSON/JSON-LD format, and generates executable tests in multiple languages (JavaScript, Java, Python) to verify the correct behavior of the described IoT services.
 
@@ -19,12 +19,12 @@ The application provides an integrated editor to upload, write, and validate Thi
 
 ## High level architecture
 
-![WIT architecture](architecture/highlevel_architecture.png)
+![WoTT architecture](architecture/highlevel_architecture.png)
 
 
 ## Technological Stack
 
-WIT is built using a TypeScript-based full-stack architecture.
+WoTT is built using a TypeScript-based full-stack architecture.
 
 ### Backend
 - **Node.js** — Runtime environment for server-side execution  
