@@ -1,0 +1,523 @@
+{
+    "enums": {
+        "InteractionType": {
+            "type": "string",
+            "enum": [
+                "property",
+                "action"
+            ]
+        },
+        "HttpMethod": {
+            "type": "string",
+            "enum": [
+                "GET",
+                "POST",
+                "PATCH",
+                "PUT",
+                "DELETE"
+            ]
+        },
+        "in": {
+            "type": "string",
+            "enum": [
+                "query",
+                "header",
+                "body",
+                "cookie",
+                "uri",
+                "auto"
+            ]
+        }
+    },
+    "TestSuite": {
+        "type": "object",
+        "required": [
+            "thingId"
+        ],
+        "properties": {
+            "thingId": {
+                "type": "string"
+            },
+            "baseUrl": {
+                "type": "string"
+            },
+            "security": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/SecurityScheme"
+                }
+            },
+            "testCases": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/TestCase"
+                }
+            }
+        }
+    },
+    "TestCase": {
+        "type": "object",
+        "required": [
+            "id",
+            "name",
+            "interactionType",
+            "interactionName",
+            "httpRequest"
+        ],
+        "properties": {
+            "id": {
+                "type": "string"
+            },
+            "name": {
+                "type": "string"
+            },
+            "description": {
+                "type": "string"
+            },
+            "interactionType": {
+                "$ref": "#/enums/InteractionType"
+            },
+            "interactionName": {
+                "type": "string"
+            },
+            "httpRequest": {
+                "$ref": "#/HttpRequest"
+            },
+            "expectedResponse": {
+                "$ref": "#/HttpResponse"
+            },
+            "responseSchema": {
+                "$ref": "#/DataSchema",
+                "description": "Schema of the expected response payload. Present for read-property test cases and action test cases that declare an output."
+            },
+            "expectedStatus": {
+                "type": "integer",
+                "description": "Expected HTTP response status code. Defaults to 200 when absent. Set to 4xx for tests that expect the service to reject the input."
+            },
+            "tags": {
+                "type": "array",
+                "items": {
+                    "type": "string"
+                }
+            },
+            "propertyPath": {
+                "type": "string",
+                "description": "Dot-path to the sub-property being tested (e.g. 'brightness', 'status.brightness'). Present only for tests derived from object sub-properties."
+            },
+            "securityScheme": {
+                "type": "string",
+                "description": "Resolved security scheme type (e.g. 'nosec'). Derived from form-level security with root-level as fallback."
+            }
+        }
+    },
+    "HttpRequest": {
+        "type": "object",
+        "required": [
+            "url",
+            "method"
+        ],
+        "properties": {
+            "url": {
+                "type": "string"
+            },
+            "method": {
+                "$ref": "#/enums/HttpMethod"
+            },
+            "headers": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/Header"
+                }
+            },
+            "queryParam": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/DataSchema"
+                }
+            },
+            "body": {
+                "$ref": "#/DataSchema"
+            },
+            "security": {
+                "type": "string"
+            }
+        }
+    },
+    "Header": {
+        "type": "object",
+        "required": [
+            "name",
+            "value"
+        ],
+        "properties": {
+            "name": {
+                "type": "string"
+            },
+            "value": {
+                "type": "string"
+            }
+        }
+    },
+    "HttpResponse": {
+        "type": "object",
+        "properties": {
+            "statusCode": {
+                "type": "number"
+            },
+            "contentType": {
+                "type": "string"
+            },
+            "bodySchema": {
+                "$ref": "#/DataSchema"
+            }
+        }
+    },
+    "DataSchema": {
+        "type": "object",
+        "required": [
+            "title"
+        ],
+        "properties": {
+            "@type": {
+                "type": "array",
+                "items": {
+                    "type": "string"
+                }
+            },
+            "title": {
+                "type": "string"
+            },
+            "unit": {
+                "type": "string"
+            },
+            "const": {
+                "type": "string"
+            },
+            "default": {
+                "type": "string"
+            },
+            "enum": {
+                "type": "string"
+            },
+            "readOnly": {
+                "type": "boolean"
+            },
+            "writeOnly": {
+                "type": "boolean"
+            },
+            "format": {
+                "type": "string"
+            },
+            "description": {
+                "type": "string"
+            },
+            "oneOf": {
+                "type": "array",
+                "items": {
+                    "$ref": "#/DataSchema"
+                }
+            }
+        }
+    },
+    "ArraySchema": {
+        "allOf": [
+            {
+                "$ref": "#/DataSchema"
+            },
+            {
+                "type": "object",
+                "properties": {
+                    "items": {
+                        "$ref": "#/DataSchema"
+                    },
+                    "minItems": {
+                        "type": "number"
+                    },
+                    "maxItems": {
+                        "type": "number"
+                    }
+                }
+            }
+        ]
+    },
+    "ObjectSchema": {
+        "allOf": [
+            {
+                "$ref": "#/DataSchema"
+            },
+            {
+                "type": "object",
+                "properties": {
+                    "properties": {
+                        "type": "object",
+                        "additionalProperties": {
+                            "$ref": "#/DataSchema"
+                        }
+                    },
+                    "required": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        ]
+    },
+    "StringSchema": {
+        "allOf": [
+            {
+                "$ref": "#/DataSchema"
+            },
+            {
+                "type": "object",
+                "properties": {
+                    "minLength": {
+                        "type": "number"
+                    },
+                    "maxLength": {
+                        "type": "number"
+                    },
+                    "pattern": {
+                        "type": "string"
+                    },
+                    "contentEncoding": {
+                        "type": "string"
+                    },
+                    "contentMediaType": {
+                        "type": "string"
+                    }
+                }
+            }
+        ]
+    },
+    "NumberSchema": {
+        "allOf": [
+            {
+                "$ref": "#/DataSchema"
+            },
+            {
+                "type": "object",
+                "properties": {
+                    "minimum": {
+                        "type": "number"
+                    },
+                    "maximum": {
+                        "type": "number"
+                    },
+                    "exclusiveMinimum": {
+                        "type": "number"
+                    },
+                    "exclusiveMaximum": {
+                        "type": "number"
+                    },
+                    "multipleOf": {
+                        "type": "number"
+                    }
+                }
+            }
+        ]
+    },
+    "NullSchema": {
+        "allOf": [
+            {
+                "$ref": "#/DataSchema"
+            },
+            {
+                "type": "object"
+            }
+        ]
+    },
+    "BooleanSchema": {
+        "allOf": [
+            {
+                "$ref": "#/DataSchema"
+            },
+            {
+                "type": "object"
+            }
+        ]
+    },
+    "SecurityScheme": {
+        "type": "object",
+        "required": [
+            "scheme"
+        ],
+        "properties": {
+            "description": {
+                "type": "string"
+            },
+            "@type": {
+                "type": "array",
+                "items": {
+                    "type": "string"
+                }
+            },
+            "scheme": {
+                "type": "string"
+            }
+        }
+    },
+    "AutoSecurityScheme": {
+        "allOf": [
+            {
+                "$ref": "#/SecurityScheme"
+            },
+            {
+                "type": "object"
+            }
+        ]
+    },
+    "BasicSecurityScheme": {
+        "allOf": [
+            {
+                "$ref": "#/SecurityScheme"
+            },
+            {
+                "type": "object"
+            },
+            {
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "in": {
+                        "$ref": "#/enums/in"
+                    }
+                }
+            }
+        ]
+    },
+    "NoSecurityScheme": {
+        "allOf": [
+            {
+                "$ref": "#/SecurityScheme"
+            },
+            {
+                "type": "object"
+            }
+        ]
+    },
+    "DigestSecurityScheme": {
+        "allOf": [
+            {
+                "$ref": "#/SecurityScheme"
+            },
+            {
+                "type": "object"
+            },
+            {
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "in": {
+                        "$ref": "#/enums/in"
+                    },
+                    "qop": {
+                        "type": "string"
+                    }
+                }
+            }
+        ]
+    },
+    "BearerSecurityScheme": {
+        "allOf": [
+            {
+                "$ref": "#/SecurityScheme"
+            },
+            {
+                "type": "object"
+            },
+            {
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "in": {
+                        "$ref": "#/enums/in"
+                    },
+                    "format": {
+                        "type": "string"
+                    },
+                    "alg": {
+                        "type": "string"
+                    },
+                    "authorization": {
+                        "type": "string"
+                    }
+                }
+            }
+        ]
+    },
+    "ApiKeySecurityScheme": {
+        "allOf": [
+            {
+                "$ref": "#/SecurityScheme"
+            },
+            {
+                "type": "object"
+            },
+            {
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "in": {
+                        "$ref": "#/enums/in"
+                    }
+                }
+            }
+        ]
+    },
+    "OAuth2SecurityScheme": {
+        "allOf": [
+            {
+                "$ref": "#/SecurityScheme"
+            },
+            {
+                "type": "object"
+            },
+            {
+                "properties": {
+                    "flow": {
+                        "type": "string"
+                    },
+                    "token": {
+                        "$ref": "#/enums/in"
+                    },
+                    "scopes": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        ]
+    },
+    "ComboSecurityScheme": {
+        "allOf": [
+            {
+                "$ref": "#/SecurityScheme"
+            },
+            {
+                "type": "object"
+            },
+            {
+                "oneOf": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "allOf": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            }
+        ]
+    }
+}

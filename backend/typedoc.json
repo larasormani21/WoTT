@@ -1,0 +1,20 @@
+{
+  "entryPoints": [
+    "index.ts",
+    "model/index.ts",
+    "model/security-scheme.ts",
+    "td-processing/td-parser.ts",
+    "td-processing/td-validation.ts",
+    "test-generation/test-generator.ts",
+    "test-generation/handlers/property-handler.ts",
+    "test-generation/handlers/action-handler.ts",
+    "code-generators/code-generation-controller.ts",
+    "code-generators/generators/javascript-generator.ts",
+    "routes/td-routes.ts"
+  ],
+  "out": "docs",
+  "exclude": ["**/*.test.ts", "node_modules/**"],
+  "tsconfig": "./tsconfig.json",
+  "name": "WIT Backend",
+  "readme": "none"
+}

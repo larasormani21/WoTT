@@ -1,0 +1,29 @@
+{
+    "title": "MyThing",
+    "base": "http://example.com",
+    "securityDefinitions": {
+        "nosec_sc": {
+            "scheme": "nosec"
+        }
+    },
+    "security": "nosec",
+    "properties": {
+        "temperature": {
+            "type": "number",
+            "forms": [
+                {
+                    "href": "/temp"
+                }
+            ]
+        }
+    },
+    "actions": {
+        "toggle": {
+            "forms": [
+                {
+                    "href": "/toggle"
+                }
+            ]
+        }
+    }
+}

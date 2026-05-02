@@ -1,0 +1,32 @@
+{
+  "@context": [
+    "https://www.w3.org/ns/wot-next/td"
+  ],
+  "title": "valid",
+  "base": "http://example.com",
+  "securityDefinitions": {
+    "nosec_sc": {
+      "scheme": "nosec"
+    }
+  },
+  "security": "nosec_sc",
+  "properties": {
+    "temperature": {
+      "type": "number",
+      "forms": [
+        {
+          "href": "/temp"
+        }
+      ]
+    }
+  },
+  "actions": {
+    "toggle": {
+      "forms": [
+        {
+          "href": "/toggle"
+        }
+      ]
+    }
+  }
+}

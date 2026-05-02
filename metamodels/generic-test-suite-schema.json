@@ -1,0 +1,99 @@
+{
+  "GenericTestSuite": {
+    "type": "object",
+    "required": ["thingId", "suiteName", "testCases"],
+    "properties": {
+      "thingId": {
+        "type": "string",
+        "description": "Identifier of the Thing under test"
+      },
+      "suiteName": {
+        "type": "string",
+        "description": "Name of the generated test suite"
+      },
+      "testCases": {
+        "type": "array",
+        "items": { "$ref": "#/GenericTestCase" }
+      }
+    }
+  },
+  "GenericTestCase": {
+    "type": "object",
+    "required": ["id", "functionName", "description", "interactionType", "interactionName"],
+    "properties": {
+      "id": {
+        "type": "string",
+        "description": "Unique identifier for this test case"
+      },
+      "functionName": {
+        "type": "string",
+        "description": "Sanitized function name to use in generated code"
+      },
+      "description": {
+        "type": "string",
+        "description": "Human-readable description of the test"
+      },
+      "interactionType": {
+        "type": "string",
+        "enum": ["property", "action"],
+        "description": "Category of interaction being tested"
+      },
+      "interactionName": {
+        "type": "string",
+        "description": "Name of the property or action being tested"
+      },
+      "httpMethod": {
+        "type": "string",
+        "description": "HTTP method for the generated test request (e.g. GET)"
+      },
+      "url": {
+        "type": "string",
+        "description": "Resolved endpoint URL for the HTTP request"
+      },
+      "requestBody": {
+        "type": "string",
+        "description": "JSON-serialized request body for write operations"
+      },
+      "responseSchema": {
+        "type": "string",
+        "description": "JSON-serialized schema of the expected response payload"
+      },
+      "propertyPath": {
+        "type": "string",
+        "description": "Dot-path to the sub-property being tested (e.g. 'brightness', 'status.brightness'). Present only for tests derived from object sub-properties."
+      },
+      "securityScheme": {
+        "type": "string",
+        "description": "Resolved security scheme type for this test case (e.g. 'nosec'). Determines authentication behavior in generated code."
+      },
+      "expectedStatus": {
+        "type": "integer",
+        "description": "Expected HTTP response status code for this test case. Defaults to 200 when absent. Set to 4xx for boundary tests that expect the service to reject an out-of-bounds value."
+      },
+      "expectedResponseBodyMinimum": {
+        "type": "number",
+        "description": "Minimum bound for the numeric response body. When present, the generated test will parse the response body and assert it is >= this value."
+      },
+      "expectedResponseBodyMaximum": {
+        "type": "number",
+        "description": "Maximum bound for the numeric response body. When present, the generated test will parse the response body and assert it is <= this value."
+      },
+      "expectedResponseMinLength": {
+        "type": "integer",
+        "description": "Minimum length for the response body string. When present, the generated test will assert that the response body length is >= this value."
+      },
+      "expectedResponseMaxLength": {
+        "type": "integer",
+        "description": "Maximum length for the response body string. When present, the generated test will assert that the response body length is <= this value."
+      },
+      "expectedResponseMinItems": {
+        "type": "integer",
+        "description": "Minimum number of items for the response body array. When present, the generated test will assert that the response body array length is >= this value."
+      },
+      "expectedResponseMaxItems": {
+        "type": "integer",
+        "description": "Maximum number of items for the response body array. When present, the generated test will assert that the response body array length is <= this value."
+      }
+    }
+  }
+}

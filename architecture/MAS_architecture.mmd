@@ -1,0 +1,52 @@
+---
+config:
+  theme: base
+  themeVariables:
+    fontSize: 18px
+  layout: dagre
+---
+flowchart TB
+ subgraph USR["fa:fa-user User"]
+  end
+ subgraph L1["Orchestration Layer"]
+        ORCH["Orchestrator Agent"]
+  end
+ subgraph L2["Selection Layer"]
+        SEL["Service Selector Agent"]
+        RANK["Service Ranker Agent"]
+  end
+ subgraph L3["Discovery Layer"]
+        CRAWL["Web Crawler Agent"]
+        TDGEN["TD Generator Agent"]
+        VALID["Validator Agent"]
+  end
+ subgraph L4["Composition Layer"]
+        REQ["Request Agent"]
+  end
+    USR -- workflow request --> L1
+    ORCH -- current step --> SEL
+    DB["TD Repository"] -.-> SEL
+    SEL -- query result --> RANK
+    RANK -- candidate services --> VALID
+    SEL -- no service found --> CRAWL
+    CRAWL -- service raw description --> TDGEN
+    TDGEN -.-> DB
+    VALID -.-> DB
+    TDGEN -- service TD --> VALID
+    REQ -- step artifact --> ORCH
+    VALID -- selected service --> REQ
+    L1 -- workflow response --> USR
+
+    DB@{ shape: cyl}
+    style ORCH stroke:#AA00FF,fill:#E1BEE7
+    style SEL fill:#FFCDD2,stroke:#D50000
+    style RANK stroke:#D50000,fill:#FFCDD2
+    style CRAWL stroke:#2962FF,fill:#BBDEFB
+    style TDGEN stroke:#2962FF,fill:#BBDEFB
+    style VALID stroke:#2962FF,fill:#BBDEFB
+    style REQ stroke:#00C853,fill:#C8E6C9
+    style L1 stroke:#AA00FF
+    style DB fill:#e0dbdb,stroke:#757575
+    style L2 stroke:#D50000
+    style L4 stroke:#00C853
+    style L3 stroke:#2962FF
