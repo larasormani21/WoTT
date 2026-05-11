@@ -1,0 +1,614 @@
+{
+  "@context": [
+    "https://www.w3.org/ns/wot-next/td",
+    {
+      "@vocab": "https://www.w3.org/ns/wot#",
+      "Thing": "http://schema.org/Thing",
+      "Action": "http://schema.org/Action",
+      "Property": "http://schema.org/Property",
+      "SecurityScheme": "http://json-schema.org/draft-07/schema#",
+      "htv": "http://www.w3.org/2011/http#",
+      "saref": "http://www.w3.org/ns/saref/",
+      "schema": "http://schema.org/"
+    }
+  ],
+  "@type": "Thing",
+  "title": "Trafiklab Realtime API",
+  "description": "A realtime transport information service providing detailed data, platforms, and realtime updates for urban mobility. It serves as a direct replacement for Resrobot 2.1 timetables and stop lookup with significantly better performance and higher quotas for end users. Suitable for smartphone applications and digital displays.",
+  "securityDefinitions": {
+    "apikey": {
+      "@type": "SecurityScheme",
+      "scheme": "apikey",
+      "in": "query",
+      "name": "key"
+    }
+  },
+  "security": "apikey",
+  "actions": {
+    "getStopGroups": {
+      "@type": "Action",
+      "name": "getStopGroups",
+      "description": "Lookup stop groups (Meta-stops, Rikshållplatser) by name or list all stops. Supports Swedish localization.",
+      "forms": [
+        {
+          "href": "https://realtime-api.trafiklab.se/v1/stops/name/{searchValue}",
+          "op": "invokeaction",
+          "contentType": "application/json",
+          "htv:methodName": "GET"
+        },
+        {
+          "href": "https://realtime-api.trafiklab.se/v1/stops/list/",
+          "op": "invokeaction",
+          "contentType": "application/json",
+          "htv:methodName": "GET"
+        }
+      ],
+      "input": {
+        "@type": "object",
+        "properties": {
+          "searchValue": {
+            "type": "string",
+            "description": "Search term for stop name (e.g., 'sto', 'Göteborg C')",
+            "minLength": 1
+          }
+        },
+        "required": ["searchValue"]
+      },
+      "output": {
+        "type": "object",
+        "properties": {
+          "timestamp": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "query": {
+            "type": "object",
+            "properties": {
+              "queryTime": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "query": {
+                "type": "string"
+              }
+            }
+          },
+          "stop_groups": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "area_type": {
+                  "type": "string",
+                  "enum": [
+                    "META_STOP",
+                    "RIKSHALLPLATS"
+                  ]
+                },
+                "average_daily_stop_times": {
+                  "type": "number"
+                },
+                "transport_modes": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "enum": [
+                      "BUS",
+                      "TRAIN",
+                      "TRAM",
+                      "METRO"
+                    ]
+                  }
+                },
+                "stops": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string"
+                      },
+                      "name": {
+                        "type": "string"
+                      },
+                      "lat": {
+                        "type": "number"
+                      },
+                      "lon": {
+                        "type": "number"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "getDepartures": {
+      "@type": "Action",
+      "name": "getDepartures",
+      "description": "Retrieve departure information for a specific area or stop.",
+      "forms": [
+        {
+          "href": "https://realtime-api.trafiklab.se/v1/departures/{areaId}",
+          "op": "invokeaction",
+          "contentType": "application/json",
+          "htv:methodName": "GET"
+        },
+        {
+          "href": "https://realtime-api.trafiklab.se/v1/departures/{areaId}/{time}",
+          "op": "invokeaction",
+          "contentType": "application/json",
+          "htv:methodName": "GET"
+        }
+      ],
+      "input": {
+        "type": "object",
+        "properties": {
+          "areaId": {
+            "type": "string",
+            "description": "Area ID (e.g., '740000002')"
+          },
+          "time": {
+            "type": "string",
+            "format": "date-time",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}$"
+          }
+        },
+        "required": [
+          "areaId"
+        ]
+      },
+      "output": {
+        "type": "object",
+        "properties": {
+          "timestamp": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "query": {
+            "type": "object",
+            "properties": {
+              "queryTime": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "query": {
+                "type": "string"
+              }
+            }
+          },
+          "stops": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "lat": {
+                  "type": "number"
+                },
+                "lon": {
+                  "type": "number"
+                },
+                "transport_modes": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "enum": [
+                      "TRAIN",
+                      "BUS"
+                    ]
+                  }
+                },
+                "alerts": {
+                  "type": "array"
+                }
+              }
+            }
+          },
+          "departures": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "scheduled": {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                "realtime": {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                "delay": {
+                  "type": "integer"
+                },
+                "canceled": {
+                  "type": "boolean"
+                },
+                "route": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string"
+                    },
+                    "designation": {
+                      "type": "string"
+                    },
+                    "transport_mode_code": {
+                      "type": "integer"
+                    },
+                    "transport_mode": {
+                      "type": "string",
+                      "enum": [
+                        "TRAIN",
+                        "BUS"
+                      ]
+                    },
+                    "direction": {
+                      "type": "string"
+                    },
+                    "origin": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string"
+                        },
+                        "name": {
+                          "type": "string"
+                        }
+                      }
+                    },
+                    "destination": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string"
+                        },
+                        "name": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                },
+                "trip": {
+                  "type": "object",
+                  "properties": {
+                    "trip_id": {
+                      "type": "string"
+                    },
+                    "start_date": {
+                      "type": "string",
+                      "format": "date"
+                    },
+                    "technical_number": {
+                      "type": "integer"
+                    }
+                  }
+                },
+                "agency": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "operator": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "stop": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "lat": {
+                      "type": "number"
+                    },
+                    "lon": {
+                      "type": "number"
+                    }
+                  }
+                },
+                "scheduled_platform": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "designation": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "realtime_platform": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "designation": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "alerts": {
+                  "type": "array"
+                },
+                "is_realtime": {
+                  "type": "boolean"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "getArrivals": {
+      "@type": "Action",
+      "name": "getArrivals",
+      "description": "Retrieve arrival information for a specific area or stop.",
+      "forms": [
+        {
+          "href": "https://realtime-api.trafiklab.se/v1/arrivals/{areaId}",
+          "op": "invokeaction",
+          "contentType": "application/json",
+          "htv:methodName": "GET"
+        },
+        {
+          "href": "https://realtime-api.trafiklab.se/v1/arrivals/{areaId}/{time}",
+          "op": "invokeaction",
+          "contentType": "application/json",
+          "htv:methodName": "GET"
+        }
+      ],
+      "input": {
+        "type": "object",
+        "properties": {
+          "areaId": {
+            "type": "string",
+            "description": "Area ID (e.g., '740000003')"
+          },
+          "time": {
+            "type": "string",
+            "format": "date-time",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}$"
+          }
+        },
+        "required": [
+          "areaId"
+        ]
+      },
+      "output": {
+        "type": "object",
+        "properties": {
+          "timestamp": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "query": {
+            "type": "object",
+            "properties": {
+              "queryTime": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "query": {
+                "type": "string"
+              }
+            }
+          },
+          "stops": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "lat": {
+                  "type": "number"
+                },
+                "lon": {
+                  "type": "number"
+                },
+                "transport_modes": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "enum": [
+                      "TRAIN",
+                      "BUS"
+                    ]
+                  }
+                },
+                "alerts": {
+                  "type": "array"
+                }
+              }
+            }
+          },
+          "arrivals": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "scheduled": {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                "realtime": {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                "delay": {
+                  "type": "integer"
+                },
+                "canceled": {
+                  "type": "boolean"
+                },
+                "route": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string"
+                    },
+                    "designation": {
+                      "type": "string"
+                    },
+                    "transport_mode_code": {
+                      "type": "integer"
+                    },
+                    "transport_mode": {
+                      "type": "string",
+                      "enum": [
+                        "TRAIN",
+                        "BUS"
+                      ]
+                    },
+                    "direction": {
+                      "type": "string"
+                    },
+                    "origin": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string"
+                        },
+                        "name": {
+                          "type": "string"
+                        }
+                      }
+                    },
+                    "destination": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string"
+                        },
+                        "name": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                },
+                "trip": {
+                  "type": "object",
+                  "properties": {
+                    "trip_id": {
+                      "type": "string"
+                    },
+                    "start_date": {
+                      "type": "string",
+                      "format": "date"
+                    },
+                    "technical_number": {
+                      "type": "integer"
+                    }
+                  }
+                },
+                "agency": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "operator": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "stop": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "lat": {
+                      "type": "number"
+                    },
+                    "lon": {
+                      "type": "number"
+                    }
+                  }
+                },
+                "scheduled_platform": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "designation": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "realtime_platform": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "designation": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "alerts": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "type": {
+                        "type": "string"
+                      },
+                      "title": {
+                        "type": "string"
+                      },
+                      "text": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                },
+                "is_realtime": {
+                  "type": "boolean"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
