@@ -1,0 +1,106 @@
+Convert the following HTML API/service documentation into a semantically enriched W3C WoT Thing Description (TD).
+
+────────────────────────────────────────────
+INPUT DESCRIPTION
+────────────────────────────────────────────
+
+The input is a JSON object for each web page of the service/API documentation, containing:
+
+- `url`: the URL of the original page.
+- `html`: the reconstructed HTML of the page, which preserves the order of 
+  content and includes:
+    - Annotated text blocks: original HTML tags (`tag_name`) are preserved.
+      - Text spans matched by semantic labels are wrapped in `<span class="LABEL">...</span>`.
+    - Code examples (`code_example`) and section headers (`section_header`) included as original HTML blocks.
+    - Comments indicating removed blocks: `<!-- BLOCKS_REMOVED block_ids -->`.
+
+Notes:
+1. Each HTML block may contain multiple labels applied to different text spans.
+2. Removed blocks are indicated with HTML comments and should guide your understanding of missing context.
+3. Labels are **hints**, indicating why a block may be relevant, including:
+   - Functional information
+   - Non-functional requirements (costs, performance, reliability, accessibility, sustainability)
+   - Contextual and operational constraints
+4. The reconstructed HTML is intended to provide a faithful, ordered, semantically enriched view of the documentation.
+
+────────────────────────────────────────────
+IMPORTANCE OF SEMANTIC LABELS
+────────────────────────────────────────────
+
+The semantic labels are fundamental for understanding:
+
+- Functional characteristics: what the service does and what users can do with it.  
+- Non-functional characteristics: constraints, costs, performance, accessibility, sustainability.  
+- Contextual information: geographical coverage, dependencies, operational limitations.  
+
+Use these labels to enrich your TD descriptions. They are **not hard constraints**, but **hints** that indicate why a block is important and what kind of information it contains.  
+The labels are provided as guidance and can be treated as a variable called `LABEL_GUIDANCE`:
+
+LABEL_GUIDANCE:
+1. Identity and Purpose
+- service purpose: general purpose of th service (e.g. This service allows users to move across the city)
+- service domain (e.g. urban mobility, logistics, tourism)
+- target user: kind of users (e.g. commuters, tourists, businesses)
+
+2. Core Functionalities
+- transport capability (e.g. "check schedules”, “book a ride”, “reserve a bike")
+- route and navigation function (e.g. planning, routes, stops, itineraries)
+- booking and reservation function (e.g. reservations, rentals, tickets)
+- real time information function (e.g. delay, availability, traffic, disruption)
+- payment function (e.g. payment, rates, subscriptions, fares)
+- user account function
+
+3. Interaction / API behavior
+- API interaction pattern (e.g. request/response, subscription, polling)
+- API method definition (action, properties, event, GET/POST/PUT/DELETE/)
+
+4. Operational and Contextual Constraints
+- geographical coverage: served area (e.g. city, zones, regions)
+- operational limitations: (e.g. time windows, zones, access restrictions)
+- unit of measurement of data
+- regulatory constraints (e.g. emission zones, traffic rules)
+- dependency on external context (e.g. weather, traffic, events)
+
+5. Non-functional Aspects
+- performance characteristics
+- reliability and availability characteristics
+- scalability characteristics
+- security and privacy aspects
+- cost model (e.g. pricing, free tiers, pay-per-use)
+- third part services dependency (e.g. weather, maps, payments)
+- multi modal support
+
+6. Accessibility and Inclusivity
+- accessibility feauture
+- user physical constraints supports
+- language and localization
+
+7. Sustainability and Environmental Impact
+- environmental impact (e.g. emissions, footprint)
+- sustainability features (e.g. sharing, electrical vehicles)
+- energy source or fuel characteristics
+- ecological regulation compliance
+
+────────────────────────────────────────────
+FUNCTIONAL & NON-FUNCTIONAL UNDERSTANDING
+────────────────────────────────────────────
+
+- Use the content and semantic labels to infer:
+  - What the service does (functionalities)
+  - How it can be used (actions/properties/events)
+  - Contextual or operational limitations
+  - Non-functional constraints (cost, performance, reliability, accessibility, sustainability)
+- Include in the TD descriptive fields that reflect these aspects if they are indicated by labels.
+
+────────────────────────────────────────────
+EXAMPLES AND TECHNICAL DETAILS
+────────────────────────────────────────────
+
+- Carefully analyze all code examples in the input (HTTP requests, responses, parameters).
+- Use them to infer actual operations, populate `forms`, input/output schemas, and confirm interaction patterns.
+
+────────────────────────────────────────────
+INPUT
+────────────────────────────────────────────
+
+{input}
